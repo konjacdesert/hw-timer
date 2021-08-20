@@ -2,19 +2,19 @@ window.addEventListener("load", () => {
   let buttonState: "start" | "pause" = "start";
   let animID: number;
   let startTime = 0;
-  let pauseTime = 0;
+  let sum = 0;
   const button = document.querySelector("button");
   const input = document.querySelector("input");
   const startFunc = () => {
     const hw = input?.value ?? 0;
-    startTime = startTime + (performance.now() - pauseTime);
+    startTime = performance.now();
     const big = document.querySelector("#big");
     const small = document.querySelector("#small");
     if (!big || !small) return;
     const func = () => {
       animID = requestAnimationFrame(func);
-      const now = performance.now();
-      const wage = (+hw * (now - startTime)) / (1000 * 60 * 60);
+      const wage =
+        sum + (+hw * (performance.now() - startTime)) / (1000 * 60 * 60);
       const nowString = wage.toFixed(2);
       if (nowString.split(".")[0] != big.innerHTML)
         big.innerHTML = `${nowString.split(".")[0]}`;
@@ -25,7 +25,8 @@ window.addEventListener("load", () => {
   };
   const pauseFunc = () => {
     cancelAnimationFrame(animID);
-    pauseTime = performance.now();
+    const hw = input?.value ?? 0;
+    sum += (+hw * (performance.now() - startTime)) / (1000 * 60 * 60);
   };
   button?.addEventListener("click", () => {
     switch (buttonState) {
